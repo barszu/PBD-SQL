@@ -1,8 +1,103 @@
+CREATE PROCEDURE RemoveCourse(
+ @courseID int
+)
+AS
+BEGIN
+ -- Check if the course exists
+ IF EXISTS (SELECT 1 FROM Courses WHERE courseID = @courseID)
+ BEGIN
+     -- Get the course data
+     DECLARE @courseTeacherID int, @date datetime, @price money, @maxEnrolls int, @currEnrolls int, @description varchar(max);
+     SELECT @courseTeacherID = courseTeacherID, @date = date, @price = price, @maxEnrolls = maxEnrolls, @currEnrolls = currEnrolls, @description = description
+     FROM Courses
+     WHERE courseID = @courseID;
+
+     -- Insert into CoursesHistory using VALUES
+     INSERT INTO CoursesHistory (courseID, courseTeacherID, date, price, enrolls , description)
+     VALUES (@courseID, @courseTeacherID, @date, @price, @currEnrolls, @description);
+
+     -- Delete the course
+     DELETE FROM Courses
+     WHERE courseID = @courseID;
+
+     PRINT 'Course has been successfully removed.';
+ END
+ ELSE
+ BEGIN
+     PRINT 'Course with the provided ID does not exist.';
+ END
+END;
+    go
+
+CREATE PROCEDURE TransferWebinarToWebinarHistory(
+ @webinarID int,
+ @linkToRecord varchar(max)
+)
+AS
+BEGIN
+ -- Check if the webinar exists
+ IF EXISTS (SELECT 1 FROM Webinars WHERE webinarID = @webinarID)
+ BEGIN
+
+     DECLARE @webinarTeacherID int , @translatorID int , @date datetime , @price money , @description varchar(max)
+    SELECT @webinarTeacherID = webinarTeacherID, @translatorID = translatorID, @date = date, @price = price, @description = description
+    FROM Webinars
+    WHERE webinarID = @webinarID;
+
+      INSERT INTO WebinarsHistory(webinarID, webinarTeacherID, translatorID, date, price, linkToRecord , description, isAvailible)
+         VALUES (@webinarID, @webinarTeacherID, @translatorID, @date, @price, @linkToRecord, @description, 1);
+
+     -- Delete from that table
+     DELETE FROM Webinars
+     WHERE webinarID = @webinarID;
+
+
+     PRINT 'Webinar has been successfully removed.';
+ END
+ ELSE
+ BEGIN
+     PRINT 'Webinar with the provided ID does not exist.';
+ END
+END;
+    go
+
+
+CREATE PROCEDURE ModifyCourse(
+  @courseID int,
+  @newCourseTeacherID int = NULL,
+  @newDate datetime = NULL,
+  @newPrice money = NULL,
+  @newMaxEnrolls int = NULL,
+  @newCurrEnrolls int = NULL,
+  @newDescription varchar(max) = NULL
+)
+AS
+BEGIN
+  UPDATE Courses
+  SET courseTeacherID = ISNULL(@newCourseTeacherID, courseTeacherID), date = ISNULL(@newDate, date), price = ISNULL(@newPrice, price), maxEnrolls = ISNULL(@newMaxEnrolls, maxEnrolls), currEnrolls = ISNULL(@newCurrEnrolls, currEnrolls), description = ISNULL(@newDescription, description)
+  WHERE courseID = @courseID;
+
+  PRINT 'Course data has been successfully updated.';
+END;
+    GO
+
+
+CREATE PROCEDURE GetSyllabus
+    @fieldOfStudiesID int
+AS
+BEGIN
+    SELECT ss.studiesSubjectID, ss.fieldOfStudiesID, fos.name, fos.type, fos.description, fos.practises, fos.maxEnrolls, fos.currEnrolls, fos.startDate, fos.isAvailible
+    FROM StudiesSubject ss
+    INNER JOIN FieldOfStudies fos ON ss.fieldOfStudiesID = fos.fieldOfStudiesID
+    WHERE fos.fieldOfStudiesID = @fieldOfStudiesID;
+END;
+    GO
+
 -- AccessTimeLaws
 CREATE PROCEDURE AddAccessTimeLaw
    @startDate DATETIME,
    @endDate DATETIME = NULL,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT = 1,
    @noDays INT
 AS
@@ -30,44 +125,42 @@ BEGIN
    VALUES (@adminID, @startedDate);
 
 
-   PRINT 'Nowa sesja została pomyślnie utworzona.';
+   PRINT N'Nowa sesja została pomyślnie utworzona.';
 END;
 go
 
 -- Procedura dodajaca administratora
 CREATE PROCEDURE AddAdministrator(
-   @adminID int,
    @accessLvl int,
-   @firstname text,
-   @lastname text,
-   @title text,
-   @email text,
-   @phone text,
-   @encodedPassword text,
-   @address text,
-   @postalcode text
+   @firstname varchar(max),
+   @lastname varchar(max),
+   @title varchar(max),
+   @email varchar(max),
+   @phone varchar(max),
+   @encodedPassword varchar(max),
+   @address varchar(max),
+   @postalcode varchar(max)
 )
 AS
 BEGIN
-   INSERT INTO Administrators (adminID, accessLvl, firstname, lastname, title, email, phone, encodedPassword, address, postalcode)
-   VALUES (@adminID, @accessLvl, @firstname, @lastname, @title, @email, @phone, @encodedPassword, @address, @postalcode);
+   INSERT INTO Administrators (accessLvl, firstname, lastname, title, email, phone, encodedPassword, address, postalcode)
+   VALUES (@accessLvl, @firstname, @lastname, @title, @email, @phone, @encodedPassword, @address, @postalcode);
 END;
 go
 
 --Procedura dodająca kurs
 CREATE PROCEDURE AddCourse(
-  @courseID int,
   @courseTeacherID int,
   @date datetime,
   @price money,
   @maxEnrolls int,
   @currEnrolls int,
-  @description text
+  @description varchar(max)
 )
 AS
 BEGIN
-  INSERT INTO Courses (courseID, courseTeacherID, date, price, maxEnrolls, currEnrolls, description)
-  VALUES (@courseID, @courseTeacherID, @date, @price, @maxEnrolls, @currEnrolls, @description);
+  INSERT INTO Courses (courseTeacherID, date, price, maxEnrolls, currEnrolls, description)
+  VALUES (@courseTeacherID, @date, @price, @maxEnrolls, @currEnrolls, @description);
 
   PRINT 'New course has been successfully added.';
 END;
@@ -75,7 +168,6 @@ go
 
 --Procedura dodająca moduł kursu
 CREATE PROCEDURE AddCourseModule(
-  @moduleID int,
   @courseID int,
   @courseWebinarID int,
   @translatorID int,
@@ -88,8 +180,8 @@ CREATE PROCEDURE AddCourseModule(
 )
 AS
 BEGIN
-  INSERT INTO CourseModules (moduleID, courseID, courseWebinarID, translatorID, attendanceType, name, type, classroom, linkToRecord, description)
-  VALUES (@moduleID, @courseID, @courseWebinarID, @translatorID, @attendanceType, @name, @type, @classroom, @linkToRecord, @description);
+  INSERT INTO CourseModules (courseID, courseWebinarID, translatorID, attendanceType, name, type, classroom, linkToRecord, description)
+  VALUES (@courseID, @courseWebinarID, @translatorID, @attendanceType, @name, @type, @classroom, @linkToRecord, @description);
 
   PRINT 'New course module has been successfully added.';
 END;
@@ -136,7 +228,7 @@ BEGIN
    );
 
 
-   PRINT 'Nowy Course Teacher został pomyślnie dodany.';
+   PRINT N'Nowy Course Teacher został pomyślnie dodany.';
 END;
 go
 
@@ -181,7 +273,7 @@ BEGIN
    );
 
 
-   PRINT 'Nowy Course User został pomyślnie dodany.';
+   PRINT N'Nowy Course User został pomyślnie dodany.';
 END;
 go
 
@@ -189,7 +281,7 @@ go
 CREATE PROCEDURE AddDaysOfPracticeLaw
    @startDate DATETIME,
    @endDate DATETIME = NULL,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT = 1,
    @noDays INT
 AS
@@ -206,13 +298,12 @@ go
 
 --Procedura dodająca kierunek studiów
            CREATE PROCEDURE AddFieldOfStudies
-   @fieldOfStudiesID int,
-   @name text,
-   @description text
+   @name varchar(max),
+   @description varchar(max)
 AS
 BEGIN
-   INSERT INTO FieldOfStudies (fieldOfStudiesID, name, description)
-   VALUES (@fieldOfStudiesID, @name, @description);
+   INSERT INTO FieldOfStudies (name, description)
+   VALUES (@name, @description);
 END;
 go
 
@@ -220,7 +311,7 @@ go
 CREATE PROCEDURE AddMaxDaysForPayementBeforeCourseLaw
    @startDate DATETIME,
    @endDate DATETIME = NULL,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT = 1,
    @noDays INT
 AS
@@ -239,7 +330,7 @@ go
 CREATE PROCEDURE AddMaxDaysForPayementBeforeStudiesLaw
    @startDate DATETIME,
    @endDate DATETIME = NULL,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT = 1,
    @noDays INT
 AS
@@ -258,7 +349,7 @@ go
 CREATE PROCEDURE AddMinAttendanceToPassCourseLaw
    @startDate DATETIME,
    @endDate DATETIME = NULL,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT = 1,
    @minAttendance INT
  AS
@@ -279,7 +370,7 @@ go
 CREATE PROCEDURE AddMinAttendanceToPassPracticeLaw
    @startDate DATETIME,
    @endDate DATETIME = NULL,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT = 1,
    @minAttendance INT
  AS
@@ -299,7 +390,7 @@ go
 CREATE PROCEDURE AddMinAttendanceToPassStudiesLaw
    @startDate DATETIME,
    @endDate DATETIME = NULL,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT = 1,
    @minAttendance INT
  AS
@@ -378,19 +469,18 @@ go
 
 -- Procedura dodająca przedmiot studiów
    CREATE PROCEDURE AddStudiesSubject
-   @studiesSubjectID int,
    @fieldOfStudiesID int,
    @mainCoordinatorID int,
-   @name text,
+   @name varchar(max),
    @semester int,
-   @description text,
+   @description varchar(max),
    @price money,
    @maxEnrolls int,
    @currEnrolls int
 AS
 BEGIN
-   INSERT INTO StudiesSubject (studiesSubjectID, fieldOfStudiesID, mainCoordinatorID, name, semester, description, price, maxEnrolls, currEnrolls)
-   VALUES (@studiesSubjectID, @fieldOfStudiesID, @mainCoordinatorID, @name, @semester, @description, @price, @maxEnrolls, @currEnrolls);
+   INSERT INTO StudiesSubject (fieldOfStudiesID, mainCoordinatorID, name, semester, description, price, maxEnrolls, currEnrolls)
+   VALUES (@fieldOfStudiesID, @mainCoordinatorID, @name, @semester, @description, @price, @maxEnrolls, @currEnrolls);
 END;
 go
 
@@ -544,7 +634,7 @@ BEGIN
    );
 
 
-   PRINT 'Nowy tłumacz został pomyślnie dodany.';
+   PRINT N'Nowy tłumacz został pomyślnie dodany.';
 END;
 go
 
@@ -562,8 +652,6 @@ CREATE PROCEDURE AddUser(
 AS
 BEGIN
    DECLARE @userID int;
-   DECLARE @dateOfCreation datetime = GETDATE();
-
 
    -- Dodaj nowego użytkownika
    INSERT INTO Users (firstname, lastname, title, email, phone, encodedPassword, address, postalcode)
@@ -587,7 +675,7 @@ BEGIN
    WHERE userID = @userID;
 
 
-   PRINT 'Nowy użytkownik został pomyślnie dodany.';
+   PRINT N'Nowy użytkownik został pomyślnie dodany.';
 END;
 go
 
@@ -604,7 +692,7 @@ BEGIN
    VALUES (@userID, @startedDate);
 
 
-   PRINT 'Nowa sesja została pomyślnie utworzona dla userID: ' + CAST(@userID AS varchar(10));
+   PRINT N'Nowa sesja została pomyślnie utworzona dla userID: ' + CAST(@userID AS varchar(10));
 END;
 go
 
@@ -614,8 +702,8 @@ go
   @translatorID int,
   @date datetime,
   @price money,
-  @linkToMeet text,
-  @description text
+  @linkToMeet varchar(max),
+  @description varchar(max)
 )
 AS
 BEGIN
@@ -667,7 +755,7 @@ BEGIN
    );
 
 
-   PRINT 'Nowy Webinar Teacher został pomyślnie dodany.';
+   PRINT N'Nowy Webinar Teacher został pomyślnie dodany.';
 END;
 go
 
@@ -712,7 +800,7 @@ BEGIN
    );
 
 
-   PRINT 'Nowy Webinar User został pomyślnie dodany.';
+   PRINT N'Nowy Webinar User został pomyślnie dodany.';
 END;
 go
 
@@ -1449,7 +1537,7 @@ BEGIN
    WHERE userID = @userID;
 
 
-   PRINT 'Dane ról zostały pomyślnie zaktualizowane dla userID: ' + CAST(@userID AS varchar(10));
+   PRINT N'Dane ról zostały pomyślnie zaktualizowane dla userID: ' + CAST(@userID AS varchar(10));
 END;
 go
 
@@ -1600,7 +1688,7 @@ BEGIN
    );
 
 
-   PRINT 'Dane CourseTeacher zostały pomyślnie zaktualizowane.';
+   PRINT N'Dane CourseTeacher zostały pomyślnie zaktualizowane.';
 END;
 go
 
@@ -1643,7 +1731,7 @@ BEGIN
    );
 
 
-   PRINT 'Dane CourseUsers zostały pomyślnie zaktualizowane.';
+   PRINT N'Dane CourseUsers zostały pomyślnie zaktualizowane.';
 END;
 go
 
@@ -1825,7 +1913,7 @@ BEGIN
    );
 
 
-   PRINT 'Dane tłumacza zostały pomyślnie zaktualizowane.';
+   PRINT N'Dane tłumacza zostały pomyślnie zaktualizowane.';
 END;
 go
 
@@ -1903,7 +1991,7 @@ BEGIN
    );
 
 
-   PRINT 'Dane użytkownika zostały pomyślnie zaktualizowane.';
+   PRINT N'Dane użytkownika zostały pomyślnie zaktualizowane.';
 END;
 go
 
@@ -1977,7 +2065,7 @@ BEGIN
    );
 
 
-   PRINT 'Dane WebinarTeacher zostały pomyślnie zaktualizowane.';
+   PRINT N'Dane WebinarTeacher zostały pomyślnie zaktualizowane.';
 END;
 go
 
@@ -2020,7 +2108,7 @@ BEGIN
    );
 
 
-   PRINT 'Dane WebinarUser zostały pomyślnie zaktualizowane.';
+   PRINT N'Dane WebinarUser zostały pomyślnie zaktualizowane.';
 END;
 go
 
@@ -2078,11 +2166,11 @@ BEGIN
        );
 
 
-       PRINT 'Rola Course Teacher została pomyślnie usunięta dla userID: ' + CAST(@userID AS varchar(10));
+       PRINT N'Rola Course Teacher została pomyślnie usunięta dla userID: ' + CAST(@userID AS varchar(10));
    END
    ELSE
    BEGIN
-       PRINT 'Użytkownik o podanym ID nie posiada roli Course Teacher.';
+       PRINT N'Użytkownik o podanym ID nie posiada roli Course Teacher.';
    END
 END;
 go
@@ -2120,11 +2208,11 @@ BEGIN
        );
 
 
-       PRINT 'Rola Course User została pomyślnie usunięta dla userID: ' + CAST(@userID AS varchar(10));
+       PRINT N'Rola Course User została pomyślnie usunięta dla userID: ' + CAST(@userID AS varchar(10));
    END
    ELSE
    BEGIN
-       PRINT 'Użytkownik o podanym ID nie posiada roli Course User.';
+       PRINT N'Użytkownik o podanym ID nie posiada roli Course User.';
    END
 END;
 go
@@ -2333,11 +2421,11 @@ BEGIN
        );
 
 
-       PRINT 'Rola tłumacza została pomyślnie usunięta dla userID: ' + CAST(@userID AS varchar(10));
+       PRINT N'Rola tłumacza została pomyślnie usunięta dla userID: ' + CAST(@userID AS varchar(10));
    END
    ELSE
    BEGIN
-       PRINT 'Użytkownik o podanym ID nie posiada roli tłumacza.';
+       PRINT N'Użytkownik o podanym ID nie posiada roli tłumacza.';
    END
 END;
 go
@@ -2414,7 +2502,7 @@ BEGIN
    WHERE userID = @userID;
 
 
-   PRINT 'Role zostały pomyślnie usunięte dla userID: ' + CAST(@userID AS varchar(10));
+   PRINT N'Role zostały pomyślnie usunięte dla userID: ' + CAST(@userID AS varchar(10));
 END;
 go
 
@@ -2474,11 +2562,11 @@ BEGIN
        );
 
 
-       PRINT 'Rola Webinar Teacher została pomyślnie usunięta dla userID: ' + CAST(@userID AS varchar(10));
+       PRINT N'Rola Webinar Teacher została pomyślnie usunięta dla userID: ' + CAST(@userID AS varchar(10));
    END
    ELSE
    BEGIN
-       PRINT 'Użytkownik o podanym ID nie posiada roli Webinar Teacher.';
+       PRINT N'Użytkownik o podanym ID nie posiada roli Webinar Teacher.';
    END
 END;
 go
@@ -2516,11 +2604,11 @@ BEGIN
        );
 
 
-       PRINT 'Rola Webinar User została pomyślnie usunięta dla userID: ' + CAST(@userID AS varchar(10));
+       PRINT N'Rola Webinar User została pomyślnie usunięta dla userID: ' + CAST(@userID AS varchar(10));
    END
    ELSE
    BEGIN
-       PRINT 'Użytkownik o podanym ID nie posiada roli Webinar User.';
+       PRINT N'Użytkownik o podanym ID nie posiada roli Webinar User.';
    END
 END;
 go
@@ -2529,7 +2617,7 @@ CREATE PROCEDURE UpdateAccessTimeLaw
    @lawID INT,
    @startDate DATETIME,
    @endDate DATETIME,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT,
    @noDays INT
 AS
@@ -2548,7 +2636,7 @@ CREATE PROCEDURE UpdateDaysOfPracticeLaw
    @lawID INT,
    @startDate DATETIME,
    @endDate DATETIME,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT,
    @noDays INT
 AS
@@ -2611,7 +2699,7 @@ CREATE PROCEDURE UpdateMaxDaysForPayementBeforeCourseLaw
    @lawID INT,
    @startDate DATETIME,
    @endDate DATETIME,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT,
    @noDays INT
 AS
@@ -2630,7 +2718,7 @@ CREATE PROCEDURE UpdateMaxDaysForPayementBeforeStudiesLaw
    @lawID INT,
    @startDate DATETIME,
    @endDate DATETIME,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT,
    @noDays INT
 AS
@@ -2649,7 +2737,7 @@ CREATE PROCEDURE UpdateMinAttendanceToPassCourseLaw
    @lawID INT,
    @startDate DATETIME,
    @endDate DATETIME,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT,
    @minAttendance INT
  AS
@@ -2668,7 +2756,7 @@ CREATE PROCEDURE UpdateMinAttendanceToPassPracticeLaw
    @lawID INT,
    @startDate DATETIME,
    @endDate DATETIME,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT,
    @minAttendance INT
  AS
@@ -2687,7 +2775,7 @@ CREATE PROCEDURE UpdateMinAttendanceToPassStudiesLaw
    @lawID INT,
    @startDate DATETIME,
    @endDate DATETIME,
-   @description TEXT,
+   @description varchar(max),
    @isTheRecent INT,
    @minAttendance INT
  AS
