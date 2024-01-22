@@ -1,3 +1,55 @@
+
+
+
+
+create procedure GetUsersWithNoAccessToCourse
+    as
+    begin
+        select CA.courseUserID
+        from CourseToUserAssignment CA
+        join Courses CS
+            on CA.courseID = CS.courseID
+        where CA.haveAccess = 0 and CA.toPay > 0 and abs(datediff(day, CS.date, getdate())) < 3;
+    end
+go
+
+create procedure GetUsersWithNoAccessToWebinar
+    as
+    begin
+        select WA.webinarUserID
+        from WebinarsToUserAssignment WA
+        join WebinarsShoppingItemHistory WS
+            on WA.webinarID = WS.webinarID
+        where WA.haveAccess = 0 and WS.hasTookPlace = 1 and WA.toPay > 0;
+    end
+go
+
+CREATE FUNCTION GetTotalOrderValue(@mainOrderID INT)
+RETURNS MONEY
+AS
+BEGIN
+    DECLARE @total MONEY;
+
+    SELECT @total = ISNULL(SUM(price), 0)
+    FROM WebinarsShoppingItemHistory
+    WHERE mainOrderID = @mainOrderID;
+
+    SELECT @total = @total + ISNULL(SUM(price), 0)
+    FROM CoursesShoppingItemHistory
+    WHERE mainOrderID = @mainOrderID;
+
+    SELECT @total = @total + ISNULL(SUM(price), 0)
+    FROM StudiesShoppingItemForStudiesUserHistory
+    WHERE mainOrderID = @mainOrderID;
+
+    SELECT @total = @total + ISNULL(SUM(price), 0)
+    FROM StudiesShoppingItemForOutsidersHistory
+    WHERE mainOrderID = @mainOrderID;
+
+    RETURN @total;
+END;
+go
+
 CREATE PROCEDURE RemoveCourse(
  @courseID int
 )

@@ -276,6 +276,7 @@ CREATE TABLE FieldOfStudies (
     maxEnrolls int  NOT NULL,
     currEnrolls int  NOT NULL,
     startDate date  NOT NULL,
+    entryFee money, --tutaj wpisowe
     isAvailible int  NOT NULL CHECK (isAvailible = 0 OR isAvailible = 1),
     CONSTRAINT enrolls_2 CHECK (currEnrolls <= maxEnrolls),
     CONSTRAINT FieldOfStudies_pk PRIMARY KEY  (fieldOfStudiesID)
@@ -290,6 +291,7 @@ CREATE TABLE FieldOfStudiesHistory (
     practises varchar(max)  NOT NULL CHECK (LEN(practises)<=100),
     startDate date  NOT NULL,
     enrolls int  NOT NULL,
+    entryFee money, --tutaj wpisowe
     CONSTRAINT FieldOfStudiesHistory_pk PRIMARY KEY  (fieldOfStudiesID)
 );
 
@@ -560,6 +562,7 @@ CREATE TABLE StudiesUserAssignmentToFieldOfStudies (
     fieldOfStudiesID int  NOT NULL,
     passed int  NOT NULL CHECK (passed = 0 OR passed = 1),
     grade int  NOT NULL CHECK (grade <= 6 AND grade >=1),
+    paidFee int NOT NULL CHECK (paidFee = 0 OR paidFee = 1),
     CONSTRAINT StudiesUserAssignmentToFieldOfStudies_pk PRIMARY KEY  (studiesUserID,fieldOfStudiesID)
 );
 
@@ -753,6 +756,7 @@ CREATE TABLE WebinarsShoppingItem (
     addedDate datetime  NOT NULL,
     price money  NOT NULL,
     hasTookPlace int  NOT NULL CHECK (hasTookPlace = 0 OR hasTookPlace = 1),
+    isPayed int  NOT NULL CHECK (isPayed = 0 OR isPayed = 1),
     CONSTRAINT WebinarsShoppingItem_pk PRIMARY KEY  (webinarID,webinarUserID)
 );
 
@@ -764,6 +768,7 @@ CREATE TABLE WebinarsShoppingItemHistory (
     addedDate datetime  NOT NULL,
     price money  NOT NULL,
     hasTookPlace int  NOT NULL CHECK (hasTookPlace = 0 OR hasTookPlace = 1),
+    isPayed int  NOT NULL CHECK (isPayed = 0 OR isPayed = 1),
     CONSTRAINT WebinarsShoppingItemHistory_pk PRIMARY KEY  (webinarID,webinarUserID,mainOrderID)
 );
 
