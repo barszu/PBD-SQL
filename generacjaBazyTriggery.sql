@@ -149,3 +149,63 @@ BEGIN
     END
 END;
 go
+
+-- Trigger dla tabeli WebinarsToUserAssignment
+CREATE TRIGGER trg_CheckWebinarAssignment
+ON WebinarsToUserAssignment
+FOR INSERT, UPDATE
+AS
+BEGIN
+    IF EXISTS (SELECT 1 FROM inserted i JOIN WebinarsToUserAssignment w ON i.webinarID = w.webinarID AND i.webinarUserID = w.webinarUserID)
+    BEGIN
+        RAISERROR ('Użytkownik jest już przypisany do tego webinaru.', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+END;
+go
+
+-- Trigger dla tabeli CourseToUserAssignment
+CREATE TRIGGER trg_CheckCourseAssignment
+ON CourseToUserAssignment
+FOR INSERT, UPDATE
+AS
+BEGIN
+    IF EXISTS (SELECT 1 FROM inserted i JOIN CourseToUserAssignment c ON i.courseID = c.courseID AND i.courseUserID = c.courseUserID)
+    BEGIN
+        RAISERROR ('Użytkownik jest już przypisany do tego kursu.', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+END;
+go
+
+-- Trigger dla tabeli StudiesUserAssignmentToFieldOfStudies
+CREATE TRIGGER trg_CheckStudiesAssignment
+ON StudiesUserAssignmentToFieldOfStudies
+FOR INSERT, UPDATE
+AS
+BEGIN
+    IF EXISTS (SELECT 1 FROM inserted i JOIN StudiesUserAssignmentToFieldOfStudies s ON i.studiesUserID = s.studiesUserID AND i.fieldOfStudiesID = s.fieldOfStudiesID)
+    BEGIN
+        RAISERROR ('Użytkownik jest już przypisany do tych studiów.', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+END;
+go
+
+-- Trigger dla tabeli StudiesUserAssignmentToStudiesSubject
+CREATE TRIGGER trg_CheckSubjectAssignment
+ON StudiesUserAssignmentToStudiesSubject
+FOR INSERT, UPDATE
+AS
+BEGIN
+    IF EXISTS (SELECT 1 FROM inserted i JOIN StudiesUserAssignmentToStudiesSubject s ON i.studiesUserID = s.studiesUserID AND i.studiesSubjectID = s.studiesSubjectID)
+    BEGIN
+        RAISERROR ('Użytkownik jest już przypisany do tego przedmiotu.', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+END;
+go
