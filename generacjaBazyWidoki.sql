@@ -49,7 +49,7 @@ SELECT
     JOIN CourseUsers cu ON cm.courseUserID = cu.courseUserID
     JOIN Users u ON cu.courseUserID = u.userID
     JOIN CourseToUserAssignment cta ON cu.courseUserID = cta.courseUserID
-    JOIN CoursesHistory ch on cm.courseID = CH.courseID;
+    JOIN Courses ch on cm.courseID = CH.courseID;
 GO
 
 -- View: bilocation_raport
@@ -114,10 +114,10 @@ GO
 -- View: webinar_attendance_raport
 CREATE VIEW webinar_attendance_raport
 AS
-SELECT WebinarsHistory.webinarID , SUM(haveParticipated)/COUNT(WebinarsHistory.webinarID) AS presence
+SELECT Webinars.webinarID , SUM(haveParticipated)/COUNT(Webinars.webinarID) AS presence
 FROM WebinarsToUserAssignment
-RIGHT JOIN WebinarsHistory ON WebinarsHistory.webinarID = WebinarsToUserAssignment.webinarID
-GROUP BY WebinarsHistory.webinarID;
+RIGHT JOIN Webinars ON Webinars.webinarID = WebinarsToUserAssignment.webinarID
+GROUP BY Webinars.webinarID;
 GO
 
 -- View: course_attendance_raport

@@ -41,7 +41,7 @@ CREATE TABLE Administrators (
     lastname        varchar(max) NOT NULL CHECK (LEN(lastname)<=25),
     title           varchar(max) NULL CHECK (LEN(title) <= 10),
     email           varchar(max)         NOT NULL CHECK (LEN(email)<=25 AND email LIKE '%@%'),
-    phone           varchar(max)         NOT NULL CHECK (LEN(phone)=9),
+    phone           varchar(max)         NOT NULL CHECK (LEN(phone)=15),
     encodedPassword varchar(max)         NOT NULL,
     address         varchar(max)         NOT NULL,
     postalcode      varchar(max) NOT NULL CHECK (postalcode LIKE '__-___'),
@@ -52,24 +52,24 @@ CREATE TABLE Administrators (
 CREATE TABLE AdministratorsDataChangeHistory (
     adminID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_accessLvl int  NOT NULL CHECK (old_accessLvl = 1 OR old_accessLvl = 2),
-    old_firstname varchar(max)  NOT NULL CHECK (LEN(old_firstname)<=25),
-    old_lastname varchar(max)  NOT NULL CHECK (LEN(old_lastname)<=25),
+    old_accessLvl int  NULL CHECK (old_accessLvl = 1 OR old_accessLvl = 2),
+    old_firstname varchar(max)  NULL CHECK (LEN(old_firstname)<=25),
+    old_lastname varchar(max)  NULL CHECK (LEN(old_lastname)<=25),
     old_title varchar(max)  NULL CHECK (LEN(old_title) <= 10),
-    old_email varchar(max)  NOT NULL CHECK (LEN(old_email)<=25 AND old_email LIKE '%@%'),
-    old_phone varchar(max)  NOT NULL CHECK (LEN(old_phone)=9),
-    old_encodedPassword varchar(max)  NOT NULL,
-    old_address varchar(max)  NOT NULL,
-    old_postalcode varchar(max)  NOT NULL CHECK (old_postalcode LIKE '__-___'),
-    new_accessLvl int  NOT NULL CHECK (new_accessLvl = 1 OR new_accessLvl = 2),
-    new_firstname varchar(max)  NOT NULL CHECK (LEN(new_firstname)<=25),
-    new_lastname varchar(max)  NOT NULL CHECK (LEN(new_lastname)<=25),
+    old_email varchar(max)  NULL CHECK (LEN(old_email)<=25 AND old_email LIKE '%@%'),
+    old_phone varchar(max)  NULL CHECK (LEN(old_phone)=9),
+    old_encodedPassword varchar(max)  NULL,
+    old_address varchar(max)  NULL,
+    old_postalcode varchar(max)  NULL CHECK (old_postalcode LIKE '__-___'),
+    new_accessLvl int  NULL CHECK (new_accessLvl = 1 OR new_accessLvl = 2),
+    new_firstname varchar(max)  NULL CHECK (LEN(new_firstname)<=25),
+    new_lastname varchar(max)  NULL CHECK (LEN(new_lastname)<=25),
     new_title varchar(max)  NULL CHECK (LEN(new_title) <= 10),
-    new_email varchar(max)  NOT NULL CHECK (LEN(new_email)<=25 AND new_email LIKE '%@%'),
-    new_phone varchar(max)  NOT NULL CHECK (LEN(new_phone)=9),
-    new_encodedPassword varchar(max)  NOT NULL,
-    new_address varchar(max)  NOT NULL,
-    new_postalcode varchar(max)  NOT NULL CHECK (new_postalcode LIKE '__-___'),
+    new_email varchar(max)  NULL CHECK (LEN(new_email)<=25 AND new_email LIKE '%@%'),
+    new_phone varchar(max)  NULL CHECK (LEN(new_phone)=9),
+    new_encodedPassword varchar(max)  NULL,
+    new_address varchar(max)  NULL,
+    new_postalcode varchar(max)  NULL CHECK (new_postalcode LIKE '__-___'),
     CONSTRAINT AdministratorsDataChangeHistory_pk PRIMARY KEY  (adminID,dateOfChange)
 );
 
@@ -106,22 +106,22 @@ CREATE TABLE CourseModulesDataChangeHistory (
     courseID int  NOT NULL,
     moduleID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_courseWebinarID int  NOT NULL,
+    old_courseWebinarID int  NULL,
     old_translatorID int  NULL,
-    old_attendanceType varchar(max)  NOT NULL,
-    old_name varchar(max)  NOT NULL CHECK (LEN(old_name)<=25),
-    old_type varchar(max)  NOT NULL,
-    old_classroom varchar(max)  NOT NULL,
-    old_linktToRecord varchar(max)  NOT NULL,
-    old_description varchar(max)  NOT NULL CHECK (LEN(old_description) <= 100),
-    new_courseWebinarID int  NOT NULL,
-    new_translatorID int  NOT NULL,
-    new_attendanceType varchar(max)  NOT NULL,
-    new_name varchar(max)  NOT NULL CHECK (LEN(new_name)<=25),
-    new_type varchar(max)  NOT NULL,
-    new_classroom varchar(max)  NOT NULL,
-    new_linkToRecord varchar(max)  NOT NULL,
-    new_description varchar(max)  NOT NULL CHECK (LEN(new_description) <= 100),
+    old_attendanceType varchar(max)  NULL,
+    old_name varchar(50)  NULL,
+    old_type varchar(max)  NULL,
+    old_classroom varchar(max)  NULL,
+    old_linktToRecord varchar(max)  NULL,
+    old_description varchar(100)  NULL,
+    new_courseWebinarID int  NULL,
+    new_translatorID int  NULL,
+    new_attendanceType varchar(max)  NULL,
+    new_name varchar(50)  NULL,
+    new_type varchar(max)  NULL,
+    new_classroom varchar(max)  NULL,
+    new_linkToRecord varchar(max)  NULL,
+    new_description varchar(100)  NULL,
     CONSTRAINT CourseModulesDataChangeHistory_pk PRIMARY KEY  (courseID,moduleID,dateOfChange)
 );
 
@@ -137,10 +137,10 @@ CREATE TABLE CourseTeacher (
 CREATE TABLE CourseTeacherDataChangeHistory (
     courseTeacherID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_description varchar(max)  NOT NULL CHECK (LEN(old_description) <= 100),
-    old_email varchar(max)  NOT NULL CHECK (LEN(old_email)<=25 AND old_email LIKE '%@%'),
-    new_description varchar(max)  NOT NULL CHECK (LEN(new_description) <= 100),
-    new_email varchar(max)  NOT NULL CHECK (LEN(new_email)<=25 AND new_email LIKE '%@%'),
+    old_description varchar(100) NULL,
+    old_email varchar(50)  NULL CHECK (old_email LIKE '%@%'),
+    new_description varchar(100)  NULL,
+    new_email varchar(50)  NULL CHECK (new_email LIKE '%@%'),
     CONSTRAINT CourseTeacherDataChangeHistory_pk PRIMARY KEY  (courseTeacherID,dateOfChange)
 );
 
@@ -169,10 +169,10 @@ CREATE TABLE CourseUsers (
 CREATE TABLE CourseUsersDataChangeHistory (
     courseUserID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_description varchar(max)  NOT NULL CHECK (LEN(old_description) <= 100),
-    old_email varchar(max)  NOT NULL CHECK (LEN(old_email)<=25 AND old_email LIKE '%@%'),
-    new_description varchar(max)  NOT NULL CHECK (LEN(new_description) <= 100),
-    new_email varchar(max)  NOT NULL CHECK (LEN(new_email)<=25 AND new_email LIKE '%@%'),
+    old_description varchar(100)  NULL,
+    old_email varchar(50)  NULL CHECK (old_email LIKE '%@%'),
+    new_description varchar(100)  NULL,
+    new_email varchar(50)  NULL CHECK (new_email LIKE '%@%'),
     CONSTRAINT CourseUsersDataChangeHistory_pk PRIMARY KEY  (courseUserID,dateOfChange)
 );
 
@@ -193,20 +193,20 @@ CREATE TABLE CourseWebinars (
 CREATE TABLE CourseWebinarsDataChangeHistory (
     courseWebinarID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_courseTeacherID int  NOT NULL,
+    old_courseTeacherID int  NULL,
     old_translatorID int  NULL,
-    old_date datetime  NOT NULL,
+    old_date datetime  NULL,
     old_linkToMeet varchar(max)  NULL,
-    old_classroom varchar(max)  NOT NULL,
+    old_classroom varchar(max) NULL,
     old_linkToRecord varchar(max)  NULL,
-    old_description varchar(max)  NOT NULL CHECK (LEN(old_description) <= 100),
-    new_courseTeacherID int  NOT NULL,
-    new_translatorID int  NOT NULL,
-    new_date datetime  NOT NULL,
-    new_linkToMeet varchar(max)  NOT NULL,
-    new_classroom varchar(max)  NOT NULL,
-    new_linkToRecord varchar(max)  NOT NULL,
-    new_description varchar(max)  NOT NULL CHECK (LEN(new_description) <= 100),
+    old_description varchar(100)  NULL,
+    new_courseTeacherID int  NULL,
+    new_translatorID int  NULL,
+    new_date datetime  NULL,
+    new_linkToMeet varchar(max)  NULL,
+    new_classroom varchar(max)  NULL,
+    new_linkToRecord varchar(max)  NULL,
+    new_description varchar(100)  NULL ,
     CONSTRAINT CourseWebinarsDataChangeHistory_pk PRIMARY KEY  (courseWebinarID,dateOfChange)
 );
 
@@ -219,20 +219,11 @@ CREATE TABLE Courses (
     currEnrolls int  NOT NULL,
     maxEnrolls int  NOT NULL,
     description varchar(max)  NOT NULL CHECK (LEN(description) <= 100),
+    isAvailable int  NOT NULL CHECK (isAvailable = 0 OR isAvailable = 1),
     CONSTRAINT Courses_pk PRIMARY KEY  (courseID),
     CONSTRAINT enrolls CHECK (currEnrolls <= maxEnrolls)
 );
 
--- Table: CoursesHistory
-CREATE TABLE CoursesHistory (
-    courseID int  NOT NULL,
-    courseTeacherID int  NOT NULL,
-    date datetime  NOT NULL,
-    price money  NOT NULL,
-    enrolls int  NOT NULL,
-    description varchar(max)  NOT NULL CHECK (LEN(description) <= 100),
-    CONSTRAINT CoursesHistory_pk PRIMARY KEY  (courseID)
-);
 
 -- Table: CoursesShoppingItem
 CREATE TABLE CoursesShoppingItem (
@@ -277,23 +268,11 @@ CREATE TABLE FieldOfStudies (
     currEnrolls int  NOT NULL,
     startDate date  NOT NULL,
     entryFee money, --tutaj wpisowe
-    isAvailible int  NOT NULL CHECK (isAvailible = 0 OR isAvailible = 1),
+    isAvailable int  NOT NULL CHECK (isAvailable = 0 OR isAvailable = 1),
     CONSTRAINT enrolls_2 CHECK (currEnrolls <= maxEnrolls),
     CONSTRAINT FieldOfStudies_pk PRIMARY KEY  (fieldOfStudiesID)
 );
 
--- Table: FieldOfStudiesHistory
-CREATE TABLE FieldOfStudiesHistory (
-    fieldOfStudiesID int  NOT NULL,
-    name varchar(max)  NOT NULL,
-    type varchar(max)  NOT NULL,
-    description varchar(max)  NOT NULL CHECK (LEN(description) <= 100),
-    practises varchar(max)  NOT NULL CHECK (LEN(practises)<=100),
-    startDate date  NOT NULL,
-    enrolls int  NOT NULL,
-    entryFee money, --tutaj wpisowe
-    CONSTRAINT FieldOfStudiesHistory_pk PRIMARY KEY  (fieldOfStudiesID)
-);
 
 -- Table: Lessons
 CREATE TABLE Lessons (
@@ -313,6 +292,7 @@ CREATE TABLE Lessons (
     currEnrolls int  NOT NULL,
     fieldOfStudiesID int  NOT NULL,
     tookPlace int  NOT NULL,
+    isAvailable int  NOT NULL CHECK (isAvailable = 0 OR isAvailable = 1),
     CONSTRAINT enrolls_3 CHECK (currEnrolls <= maxEnrolls),
     CONSTRAINT Lessons_pk PRIMARY KEY  (lessonID,studiesSubjectID)
 );
@@ -322,49 +302,31 @@ CREATE TABLE LessonsDataChangeHistory (
     lessonID int  NOT NULL,
     studiesSubjectID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_studiesTeacherID int  NOT NULL,
+    old_studiesTeacherID int  NULL,
     old_translatorID int  NULL,
-    old_date datetime  NOT NULL,
-    old_description varchar(max)  NOT NULL CHECK (LEN(old_description) <= 100),
-    old_classroom varchar(max)  NOT NULL,
-    old_attendanceType varchar(max)  NOT NULL,
-    old_type varchar(max)  NOT NULL,
-    old_linkToMeeting varchar(max)  NOT NULL,
-    old_singleLessonPrice money  NOT NULL,
-    old_studentPrice money  NOT NULL,
-    old_maxEnrolls int  NOT NULL,
-    new_studiesTeacherID int  NOT NULL,
-    new_translatorID int  NOT NULL,
-    new_date datetime  NOT NULL,
-    new_description varchar(max)  NOT NULL CHECK (LEN(new_description) <= 100),
-    new_classroom varchar(max)  NOT NULL,
-    new_attendanceType varchar(max)  NOT NULL,
-    new_type varchar(max)  NOT NULL,
-    new_linkToMeeting varchar(max)  NOT NULL,
-    new_singleLessonPrice money  NOT NULL,
-    new_studentPrice money  NOT NULL,
-    new_maxEnrolls int  NOT NULL,
+    old_date datetime  NULL,
+    old_description varchar(100)  NULL,
+    old_classroom varchar(max) NULL,
+    old_attendanceType varchar(max)  NULL,
+    old_type varchar(max)  NULL,
+    old_linkToMeeting varchar(max)  NULL,
+    old_singleLessonPrice money  NULL,
+    old_studentPrice money  NULL,
+    old_maxEnrolls int  NULL,
+    new_studiesTeacherID int  NULL,
+    new_translatorID int  NULL,
+    new_date datetime  NULL,
+    new_description varchar(100)  NULL,
+    new_classroom varchar(max)  NULL,
+    new_attendanceType varchar(max)  NULL,
+    new_type varchar(max)  NULL,
+    new_linkToMeeting varchar(max)  NULL,
+    new_singleLessonPrice money  NULL,
+    new_studentPrice money  NULL,
+    new_maxEnrolls int  NULL,
     CONSTRAINT LessonsDataChangeHistory_pk PRIMARY KEY  (lessonID,studiesSubjectID,dateOfChange)
 );
 
--- Table: LessonsHistory
-CREATE TABLE LessonsHistory (
-    lessonID int  NOT NULL,
-    studiesSubjectID int  NOT NULL,
-    studiesTeacherID int  NOT NULL,
-    translatorID int  NULL,
-    date datetime  NOT NULL,
-    description varchar(max)  NOT NULL CHECK (LEN(description) <= 100),
-    classroom varchar(max)  NOT NULL,
-    attendanceType varchar(max)  NOT NULL,
-    type varchar(max)  NOT NULL,
-    linkToMeeting varchar(max)  NOT NULL,
-    singleLessonPrice money  NOT NULL,
-    studentPrice money  NOT NULL,
-    enrolls int  NOT NULL,
-    fieldOfStudiesID int  NOT NULL,
-    CONSTRAINT LessonsHistory_pk PRIMARY KEY  (lessonID,studiesSubjectID)
-);
 
 -- Table: MaxDaysForPayementBeforeCourseLaws
 CREATE TABLE MaxDaysForPayementBeforeCourseLaws (
@@ -453,10 +415,10 @@ CREATE TABLE OutsidersAttendance (
 CREATE TABLE OutsidersDataChangeHistory (
     outsiderID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_description varchar(max)  NOT NULL CHECK (LEN(old_description) <= 100),
-    old_email varchar(max)  NOT NULL CHECK (LEN(old_email)<=25 AND old_email LIKE '%@%'),
-    new_description varchar(max)  NOT NULL CHECK (LEN(new_description) <= 100),
-    new_email varchar(max)  NOT NULL,
+    old_description varchar(100)  NULL,
+    old_email varchar(50)  NULL CHECK (old_email LIKE '%@%'),
+    new_description varchar(100)  NULL,
+    new_email varchar(50) NULL CHECK (new_email LIKE '%@%'),
     CONSTRAINT OutsidersDataChangeHistory_pk PRIMARY KEY  (outsiderID,dateOfChange)
 );
 
@@ -513,18 +475,7 @@ CREATE TABLE StudiesSubject (
     CONSTRAINT StudiesSubject_pk PRIMARY KEY  (studiesSubjectID,fieldOfStudiesID)
 );
 
--- Table: StudiesSubjectHistory
-CREATE TABLE StudiesSubjectHistory (
-    studiesSubjectID int  NOT NULL,
-    fieldOfStudiesID int  NOT NULL,
-    mainCoordinatorID int  NOT NULL,
-    name varchar(max)  NOT NULL CHECK (LEN(name)<=25),
-    semester int  NOT NULL,
-    description varchar(max)  NOT NULL CHECK (LEN(description) <= 100),
-    price money  NOT NULL,
-    enrolls int  NOT NULL,
-    CONSTRAINT StudiesSubjectHistory_pk PRIMARY KEY  (studiesSubjectID,fieldOfStudiesID)
-);
+
 
 -- Table: StudiesTeacher
 CREATE TABLE StudiesTeacher (
@@ -538,10 +489,10 @@ CREATE TABLE StudiesTeacher (
 CREATE TABLE StudiesTeacherDataChangeHistory (
     studiesTeacherID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_description varchar(max)  NOT NULL CHECK (LEN(old_description) <= 100),
-    old_email varchar(max)  NOT NULL CHECK (LEN(old_email)<=25 AND old_email LIKE '%@%'),
-    new_description varchar(max)  NOT NULL CHECK (LEN(new_description) <= 100),
-    new_email varchar(max)  NOT NULL,
+    old_description varchar(100)  NULL,
+    old_email varchar(50) NULL CHECK (old_email LIKE '%@%'),
+    new_description varchar(100)  NULL,
+    new_email varchar(50)  NULL CHECK (new_email LIKE '%@%'),
     CONSTRAINT StudiesTeacherDataChangeHistory_pk PRIMARY KEY  (studiesTeacherID,dateOfChange)
 );
 
@@ -582,16 +533,16 @@ CREATE TABLE StudiesUserAttendance (
 CREATE TABLE StudiesUserDataChangeHistory (
     studiesUserID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_description varchar(max)  NOT NULL CHECK (LEN(old_description) <= 100),
-    old_semester int  NOT NULL,
-    old_isActive int  NOT NULL,
-    old_index int  NOT NULL,
-    old_email varchar(max)  NOT NULL CHECK (LEN(old_email)<=25 AND old_email LIKE '%@%'),
-    new_description varchar(max)  NOT NULL CHECK (LEN(new_description) <= 100),
-    new_semester int  NOT NULL,
-    new_isActive int  NOT NULL,
-    new_index int  NOT NULL,
-    new_email varchar(max)  NOT NULL,
+    old_description varchar(100)   NULL,
+    old_semester int   NULL,
+    old_isActive int   NULL,
+    old_index int   NULL,
+    old_email varchar(50)   NULL CHECK (old_email LIKE '%@%'),
+    new_description varchar(100)   NULL,
+    new_semester int   NULL,
+    new_isActive int   NULL,
+    new_index int   NULL,
+    new_email varchar(50)   NULL CHECK (new_email LIKE '%@%'),
     CONSTRAINT StudiesUserDataChangeHistory_pk PRIMARY KEY  (studiesUserID,dateOfChange)
 );
 
@@ -607,10 +558,10 @@ CREATE TABLE Translators (
 CREATE TABLE TranslatorsDataChangeHistory (
     translatorID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_description varchar(max)  NOT NULL CHECK (LEN(old_description) <= 100),
-    old_email varchar(max)  NOT NULL CHECK (LEN(old_email)<=25 AND old_email LIKE '%@%'),
-    new_description varchar(max)  NOT NULL CHECK (LEN(new_description) <= 100),
-    new_email varchar(max)  NOT NULL CHECK (LEN(new_email)<=25 AND new_email LIKE '%@%'),
+    old_description varchar(100)   NULL,
+    old_email varchar(50)  NULL CHECK (old_email LIKE '%@%'),
+    new_description varchar(100)   NULL,
+    new_email varchar(50)   NULL CHECK (new_email LIKE '%@%'),
     CONSTRAINT TranslatorsDataChangeHistory_pk PRIMARY KEY  (translatorID,dateOfChange)
 );
 
@@ -637,7 +588,7 @@ CREATE TABLE Users (
     lastname varchar(max)  NOT NULL CHECK (LEN(lastname)<=25),
     title varchar(max)  NULL CHECK (LEN(title) <= 10),
     email varchar(max)  NOT NULL CHECK (LEN(email)<=25 AND email LIKE '%@%'),
-    phone varchar(max)  NOT NULL CHECK (LEN(phone)=9),
+    phone varchar(max)  NOT NULL CHECK (LEN(phone)=15),
     encodedPassword varchar(max)  NOT NULL,
     address varchar(max)  NOT NULL,
     postalcode varchar(max)  NOT NULL CHECK (postalcode LIKE '__-___'),
@@ -648,22 +599,22 @@ CREATE TABLE Users (
 CREATE TABLE UsersDataChangeHistory (
     userID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_firstname varchar(max)  NOT NULL CHECK (LEN(old_firstname)<=25),
-    old_lastname varchar(max)  NOT NULL CHECK (LEN(old_lastname)<=25),
-    old_title varchar(max)  NULL CHECK (LEN(old_title) <= 10),
-    old_email varchar(max)  NOT NULL CHECK (LEN(old_email)<=25 AND old_email LIKE '%@%'),
-    old_phone varchar(max)  NOT NULL CHECK (LEN(old_phone)=9),
-    old_encodedPassword varchar(max)  NOT NULL,
-    old_address varchar(max)  NOT NULL,
-    old_postalcode varchar(max)  NOT NULL CHECK (old_postalcode LIKE '__-___'),
-    new_firstname varchar(max)  NOT NULL CHECK (LEN(new_firstname)<=25),
-    new_lastname varchar(max)  NOT NULL CHECK (LEN(new_lastname)<=25),
-    new_title varchar(max)  NULL CHECK (LEN(new_title) <= 10),
-    new_email varchar(max)  NOT NULL CHECK (LEN(new_email)<=25 AND new_email LIKE '%@%'),
-    new_phone varchar(max)  NOT NULL CHECK (LEN(new_phone)=9),
-    new_encodedPassword varchar(max)  NOT NULL,
-    new_address varchar(max)  NOT NULL,
-    new_postalcode varchar(max)  NOT NULL CHECK (new_postalcode LIKE '__-___'),
+    old_firstname varchar(25)  NULL,
+    old_lastname varchar(50)  NULL,
+    old_title varchar(10)  NULL,
+    old_email varchar(50)  NULL CHECK (old_email LIKE '%@%'),
+    old_phone varchar(15)  NULL,
+    old_encodedPassword varchar(max)  NULL,
+    old_address varchar(max)  NULL,
+    old_postalcode varchar(max)  NULL CHECK (old_postalcode LIKE '__-___'),
+    new_firstname varchar(25)  NULL,
+    new_lastname varchar(50)  NULL,
+    new_title varchar(10)  NULL,
+    new_email varchar(50)  NULL CHECK (new_email LIKE '%@%'),
+    new_phone varchar(15)  NULL,
+    new_encodedPassword varchar(max)   NULL,
+    new_address varchar(max)  NULL,
+    new_postalcode varchar(max)  NULL CHECK (new_postalcode LIKE '__-___'),
     CONSTRAINT UsersDataChangeHistory_pk PRIMARY KEY  (userID,dateOfChange)
 );
 
@@ -679,10 +630,10 @@ CREATE TABLE WebinarTeacher (
 CREATE TABLE WebinarTeacherDataChangeHistory (
     webinarTeacherID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_description varchar(max)  NOT NULL CHECK (LEN(old_description) <= 100),
-    old_email varchar(max)  NOT NULL CHECK (LEN(old_email)<=25 AND old_email LIKE '%@%'),
-    new_description varchar(max)  NOT NULL CHECK (LEN(new_description) <= 100),
-    new_email varchar(max)  NOT NULL CHECK (LEN(new_email)<=25 AND new_email LIKE '%@%'),
+    old_description varchar(100)   NULL,
+    old_email varchar(50)   NULL CHECK (old_email LIKE '%@%'),
+    new_description varchar(100)   NULL,
+    new_email varchar(50)   NULL CHECK (new_email LIKE '%@%'),
     CONSTRAINT WebinarTeacherDataChangeHistory_pk PRIMARY KEY  (webinarTeacherID,dateOfChange)
 );
 
@@ -690,7 +641,7 @@ CREATE TABLE WebinarTeacherDataChangeHistory (
 CREATE TABLE WebinarUsers (
     webinarUserID int  NOT NULL IDENTITY(1,1),
     description varchar(max)  NOT NULL CHECK (LEN(description) <= 100),
-    email int  NOT NULL CHECK (LEN(email)<=25 AND email LIKE '%@%'),
+    email varchar(50)  NOT NULL CHECK (email LIKE '%@%'),
     CONSTRAINT WebinarUsers_pk PRIMARY KEY  (webinarUserID)
 );
 
@@ -698,10 +649,10 @@ CREATE TABLE WebinarUsers (
 CREATE TABLE WebinarUsersDataChangeHistory (
     webinarUserID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_description varchar(max)  NOT NULL CHECK (LEN(old_description) <= 100),
-    old_email varchar(max)  NOT NULL CHECK (LEN(old_email)<=25 AND old_email LIKE '%@%'),
-    new_description varchar(max)  NOT NULL CHECK (LEN(new_description) <= 100),
-    new_email varchar(max)  NOT NULL CHECK (LEN(new_email)<=25 AND new_email LIKE '%@%'),
+    old_description varchar(100)  NULL,
+    old_email varchar(50)  NULL,
+    new_description varchar(100)   NULL,
+    new_email varchar(50)  NULL CHECK (new_email LIKE '%@%'),
     CONSTRAINT WebinarUsersDataChangeHistory_pk PRIMARY KEY  (webinarUserID,dateOfChange)
 );
 
@@ -713,7 +664,9 @@ CREATE TABLE Webinars (
     date datetime  NOT NULL,
     price money  NOT NULL,
     linkToMeet varchar(max)  NOT NULL,
-    description varchar(max)  NOT NULL CHECK (LEN(description) <= 100),
+    description varchar(100)  NOT NULL,
+    linkToRecord varchar(max)  NULL,
+    isAvailable int  NOT NULL CHECK (isAvailable = 0 OR isAvailable = 1),
     CONSTRAINT Webinars_pk PRIMARY KEY  (webinarID)
 );
 
@@ -721,33 +674,21 @@ CREATE TABLE Webinars (
 CREATE TABLE WebinarsDataChangeHistory (
     webinarID int  NOT NULL,
     dateOfChange datetime  NOT NULL,
-    old_webinarTeacherID int  NOT NULL,
+    old_webinarTeacherID int   NULL,
     old_translatorID int  NULL,
-    old_date datetime  NOT NULL,
-    old_price money  NOT NULL,
-    old_linkToMeet varchar(max)  NOT NULL,
-    old_description varchar(max)  NOT NULL CHECK (LEN(old_description) <= 100),
-    new_webinarTeacherID int  NOT NULL,
+    old_date datetime   NULL,
+    old_price money   NULL,
+    old_linkToMeet varchar(max)   NULL,
+    old_description varchar(100)   NULL,
+    new_webinarTeacherID int   NULL,
     new_translatorID int  NULL,
-    new_date datetime  NOT NULL,
-    new_price money  NOT NULL,
-    new_linkToMeet varchar(max)  NOT NULL,
-    new_description varchar(max)  NOT NULL CHECK (LEN(new_description) <= 100),
+    new_date datetime   NULL,
+    new_price money   NULL,
+    new_linkToMeet varchar(max)   NULL,
+    new_description varchar(100)   NULL,
     CONSTRAINT WebinarsDataChangeHistory_pk PRIMARY KEY  (webinarID,dateOfChange)
 );
 
--- Table: WebinarsHistory
-CREATE TABLE WebinarsHistory (
-    webinarID int  NOT NULL,
-    webinarTeacherID int  NOT NULL,
-    translatorID int  NULL,
-    date datetime  NOT NULL,
-    price money  NOT NULL,
-    linkToRecord varchar(max)  NOT NULL,
-    description varchar(max)  NOT NULL CHECK (LEN(description) <= 100),
-    isAvailible int  NOT NULL CHECK (isAvailible = 0 OR isAvailible =1),
-    CONSTRAINT WebinarsHistory_pk PRIMARY KEY  (webinarID)
-);
 
 -- Table: WebinarsShoppingItem
 CREATE TABLE WebinarsShoppingItem (

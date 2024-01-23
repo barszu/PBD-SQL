@@ -21,9 +21,7 @@ CREATE INDEX idx_Webinars_webinarID ON Webinars(webinarID);
 CREATE INDEX idx_Webinars_webinarTeacherID ON Webinars(webinarTeacherID);
 CREATE INDEX idx_Webinars_translatorID ON Webinars(translatorID);
 
-CREATE INDEX idx_WebinarsHistory_webinarID ON WebinarsHistory(webinarID);
-CREATE INDEX idx_WebinarsHistory_webinarTeacherID ON WebinarsHistory(webinarTeacherID);
-CREATE INDEX idx_WebinarsHistory_translatorID ON WebinarsHistory(translatorID);
+
 
 CREATE INDEX idx_WebinarToUserAssignment_webinarID ON WebinarsToUserAssignment(webinarID);
 CREATE INDEX idx_WebinarToUserAssignment_webinarUserID ON WebinarsToUserAssignment(webinarUserID);
@@ -99,7 +97,7 @@ CREATE INDEX idx_CourseWebinarsDataChangeHistory_dateOfChange ON CourseWebinarsD
 
 CREATE INDEX idx_Courses_courseID ON Courses(courseID);
 
-CREATE INDEX idx_CoursesHistory_courseID ON CoursesHistory(courseID);
+
 
 CREATE INDEX idx_CoursesShoppingItem_courseID ON CoursesShoppingItem(courseID);
 CREATE INDEX idx_CoursesShoppingItem_courseUserID ON CoursesShoppingItem(courseUserID);
@@ -110,7 +108,7 @@ CREATE INDEX idx_CoursesShoppingItemHistory_courseUserID ON CoursesShoppingItemH
 
 CREATE INDEX idx_FieldOfStudies_fieldOfStudiesID ON FieldOfStudies(fieldOfStudiesID);
 
-CREATE INDEX idx_FieldOfStudiesHistory_fieldOfStudiesID ON FieldOfStudiesHistory(fieldOfStudiesID);
+
 
 CREATE INDEX idx_Lessons_lessonID ON Lessons(lessonID);
 CREATE INDEX idx_Lessons_studiesSubjectID ON Lessons(studiesSubjectID);
@@ -119,8 +117,7 @@ CREATE INDEX idx_LessonsDataChangeHistory_lessonID ON LessonsDataChangeHistory(l
 CREATE INDEX idx_LessonsDataChangeHistory_studiesSubjectID ON LessonsDataChangeHistory(studiesSubjectID);
 CREATE INDEX idx_LessonsDataChangeHistory_dateOfChange ON LessonsDataChangeHistory(dateOfChange);
 
-CREATE INDEX idx_LessonsHistory_lessonID ON LessonsHistory(lessonID);
-CREATE INDEX idx_LessonsHistory_studiesSubjectID ON LessonsHistory(studiesSubjectID);
+
 
 CREATE INDEX idx_StudiesUserDataChangeHistory_studiesUserID ON StudiesUserDataChangeHistory(studiesUserID);
 CREATE INDEX idx_StudiesUserDataChangeHistory_dateOfChange ON StudiesUserDataChangeHistory(dateOfChange);

@@ -1,9 +1,6 @@
 -- TODO: dobre
 
-    -- Reference: StudiesSubjectHistory_StudiesUserAssignmentToStudiesSubject (table: StudiesUserAssignmentToStudiesSubject)
-ALTER TABLE StudiesUserAssignmentToStudiesSubject ADD CONSTRAINT StudiesSubjectHistory_StudiesUserAssignmentToStudiesSubject
-    FOREIGN KEY (studiesSubjectID,fieldOfStudiesID)
-    REFERENCES StudiesSubjectHistory (studiesSubjectID,fieldOfStudiesID);
+
 
 -- Reference: StudiesSubject_StudiesUserAssignmentToStudiesSubject (table: StudiesUserAssignmentToStudiesSubject)
 ALTER TABLE StudiesUserAssignmentToStudiesSubject ADD CONSTRAINT StudiesSubject_StudiesUserAssignmentToStudiesSubject
@@ -50,10 +47,7 @@ ALTER TABLE CourseModules ADD CONSTRAINT CourseModules_Courses
     FOREIGN KEY (courseID)
     REFERENCES Courses (courseID);
 
--- Reference: CourseModules_CoursesHistory (table: CourseModules)
-ALTER TABLE CourseModules ADD CONSTRAINT CourseModules_CoursesHistory
-    FOREIGN KEY (courseID)
-    REFERENCES CoursesHistory (courseID);
+
 
 -- Reference: CourseModules_Translators (table: CourseModules)
 ALTER TABLE CourseModules ADD CONSTRAINT CourseModules_Translators
@@ -75,10 +69,7 @@ ALTER TABLE CourseToUserAssignment ADD CONSTRAINT CourseToUserAssignment_CourseU
     FOREIGN KEY (courseUserID)
     REFERENCES CourseUsers (courseUserID);
 
--- Reference: CourseToUserAssignment_CoursesHistory (table: CourseToUserAssignment)
-ALTER TABLE CourseToUserAssignment ADD CONSTRAINT CourseToUserAssignment_CoursesHistory
-    FOREIGN KEY (courseID)
-    REFERENCES CoursesHistory (courseID);
+
 
 -- Reference: CourseUsersDataChangeHistory_CourseUsers (table: CourseUsersDataChangeHistory)
 ALTER TABLE CourseUsersDataChangeHistory ADD CONSTRAINT CourseUsersDataChangeHistory_CourseUsers
@@ -110,10 +101,7 @@ ALTER TABLE CourseWebinars ADD CONSTRAINT CourseWebinars_Translators
     FOREIGN KEY (translatorID)
     REFERENCES Translators (translatorID);
 
--- Reference: CoursesHistory_CourseTeacher (table: CoursesHistory)
-ALTER TABLE CoursesHistory ADD CONSTRAINT CoursesHistory_CourseTeacher
-    FOREIGN KEY (courseTeacherID)
-    REFERENCES CourseTeacher (courseTeacherID);
+
 
 -- Reference: CoursesShoppingCard_CourseUsers (table: CoursesShoppingItem)
 ALTER TABLE CoursesShoppingItem ADD CONSTRAINT CoursesShoppingCard_CourseUsers
@@ -145,30 +133,17 @@ ALTER TABLE LessonsDataChangeHistory ADD CONSTRAINT LessonsDataChangeHistory_Les
     FOREIGN KEY (lessonID,studiesSubjectID)
     REFERENCES Lessons (lessonID,studiesSubjectID);
 
--- Reference: LessonsDataChangeHistory_LessonsHistory (table: LessonsDataChangeHistory)
-ALTER TABLE LessonsDataChangeHistory ADD CONSTRAINT LessonsDataChangeHistory_LessonsHistory
-    FOREIGN KEY (lessonID,studiesSubjectID)
-    REFERENCES LessonsHistory (lessonID,studiesSubjectID);
 
--- Reference: LessonsHistory_StudiesSubjectHistory (table: LessonsHistory)
-ALTER TABLE LessonsHistory ADD CONSTRAINT LessonsHistory_StudiesSubjectHistory
-    FOREIGN KEY (studiesSubjectID,fieldOfStudiesID)
-    REFERENCES StudiesSubjectHistory (studiesSubjectID,fieldOfStudiesID);
 
--- Reference: LessonsHistory_Translators (table: LessonsHistory)
-ALTER TABLE LessonsHistory ADD CONSTRAINT LessonsHistory_Translators
-    FOREIGN KEY (translatorID)
-    REFERENCES Translators (translatorID);
+
+
 
 -- Reference: Lessons_StudiesSubject (table: Lessons)
 ALTER TABLE Lessons ADD CONSTRAINT Lessons_StudiesSubject
     FOREIGN KEY (studiesSubjectID,fieldOfStudiesID)
     REFERENCES StudiesSubject (studiesSubjectID,fieldOfStudiesID);
 
--- Reference: Lessons_StudiesSubjectHistory (table: Lessons)
-ALTER TABLE Lessons ADD CONSTRAINT Lessons_StudiesSubjectHistory
-    FOREIGN KEY (studiesSubjectID,fieldOfStudiesID)
-    REFERENCES StudiesSubjectHistory (studiesSubjectID,fieldOfStudiesID);
+
 
 -- Reference: Lessons_Translators (table: Lessons)
 ALTER TABLE Lessons ADD CONSTRAINT Lessons_Translators
@@ -210,30 +185,18 @@ ALTER TABLE StudiesShoppingItemForStudiesUserHistory ADD CONSTRAINT StudiesShopp
     FOREIGN KEY (mainOrderID)
     REFERENCES OrderHistory (orderID);
 
--- Reference: StudiesSubjectHistory_FieldOfStudies (table: StudiesSubjectHistory)
-ALTER TABLE StudiesSubjectHistory ADD CONSTRAINT StudiesSubjectHistory_FieldOfStudies
-    FOREIGN KEY (fieldOfStudiesID)
-    REFERENCES FieldOfStudies (fieldOfStudiesID);
 
--- Reference: StudiesSubjectHistory_FieldOfStudiesHistory (table: StudiesSubjectHistory)
-ALTER TABLE StudiesSubjectHistory ADD CONSTRAINT StudiesSubjectHistory_FieldOfStudiesHistory
-    FOREIGN KEY (fieldOfStudiesID)
-    REFERENCES FieldOfStudiesHistory (fieldOfStudiesID);
 
--- Reference: StudiesSubjectHistory_StudiesTeacher (table: StudiesSubjectHistory)
-ALTER TABLE StudiesSubjectHistory ADD CONSTRAINT StudiesSubjectHistory_StudiesTeacher
-    FOREIGN KEY (mainCoordinatorID)
-    REFERENCES StudiesTeacher (studiesTeacherID);
+
+
+
 
 -- Reference: StudiesSubject_FieldOfStudies (table: StudiesSubject)
 ALTER TABLE StudiesSubject ADD CONSTRAINT StudiesSubject_FieldOfStudies
     FOREIGN KEY (fieldOfStudiesID)
     REFERENCES FieldOfStudies (fieldOfStudiesID);
 
--- Reference: StudiesSubject_FieldOfStudiesHistory (table: StudiesSubject)
-ALTER TABLE StudiesSubject ADD CONSTRAINT StudiesSubject_FieldOfStudiesHistory
-    FOREIGN KEY (fieldOfStudiesID)
-    REFERENCES FieldOfStudiesHistory (fieldOfStudiesID);
+
 
 -- Reference: StudiesSubject_StudiesTeacher (table: StudiesSubject)
 ALTER TABLE StudiesSubject ADD CONSTRAINT StudiesSubject_StudiesTeacher
@@ -250,10 +213,7 @@ ALTER TABLE Users ADD CONSTRAINT StudiesTeacher_Users
     FOREIGN KEY (studiesTeacherID)
     REFERENCES StudiesTeacher (studiesTeacherID);
 
--- Reference: StudiesUserAssignmentToFieldOfStudies_FieldOfStudiesHistory (table: StudiesUserAssignmentToFieldOfStudies)
-ALTER TABLE StudiesUserAssignmentToFieldOfStudies ADD CONSTRAINT StudiesUserAssignmentToFieldOfStudies_FieldOfStudiesHistory
-    FOREIGN KEY (fieldOfStudiesID)
-    REFERENCES FieldOfStudiesHistory (fieldOfStudiesID);
+
 
 -- Reference: StudiesUserAssignmentToFieldOfStudies_StudiesUser (table: StudiesUserAssignmentToFieldOfStudies)
 ALTER TABLE StudiesUserAssignmentToFieldOfStudies ADD CONSTRAINT StudiesUserAssignmentToFieldOfStudies_StudiesUser
@@ -350,20 +310,11 @@ ALTER TABLE WebinarsDataChangeHistory ADD CONSTRAINT WebinarsDataChangeHistory_W
     FOREIGN KEY (webinarID)
     REFERENCES Webinars (webinarID);
 
--- Reference: WebinarsDataChangeHistory_WebinarsHistory (table: WebinarsDataChangeHistory)
-ALTER TABLE WebinarsDataChangeHistory ADD CONSTRAINT WebinarsDataChangeHistory_WebinarsHistory
-    FOREIGN KEY (webinarID)
-    REFERENCES WebinarsHistory (webinarID);
 
--- Reference: WebinarsHistory_Translators (table: WebinarsHistory)
-ALTER TABLE WebinarsHistory ADD CONSTRAINT WebinarsHistory_Translators
-    FOREIGN KEY (translatorID)
-    REFERENCES Translators (translatorID);
 
--- Reference: WebinarsHistory_WebinarTeacher (table: WebinarsHistory)
-ALTER TABLE WebinarsHistory ADD CONSTRAINT WebinarsHistory_WebinarTeacher
-    FOREIGN KEY (webinarTeacherID)
-    REFERENCES WebinarTeacher (webinarTeacherID);
+
+
+--
 
 -- Reference: WebinarsShoppingCard_WebinarUsers (table: WebinarsShoppingItem)
 ALTER TABLE WebinarsShoppingItem ADD CONSTRAINT WebinarsShoppingCard_WebinarUsers
@@ -385,10 +336,7 @@ ALTER TABLE WebinarsToUserAssignment ADD CONSTRAINT WebinarsToUserAssignment_Web
     FOREIGN KEY (webinarID)
     REFERENCES Webinars (webinarID);
 
--- Reference: WebinarsToUserAssignment_WebinarsHistory (table: WebinarsToUserAssignment)
-ALTER TABLE WebinarsToUserAssignment ADD CONSTRAINT WebinarsToUserAssignment_WebinarsHistory
-    FOREIGN KEY (webinarID)
-    REFERENCES WebinarsHistory (webinarID);
+
 
 -- Reference: Webinars_Translators (table: Webinars)
 ALTER TABLE Webinars ADD CONSTRAINT Webinars_Translators

@@ -69,15 +69,20 @@ end
 go
 
 CREATE TRIGGER UpdateHasTookPlace
-ON WebinarsHistory
-AFTER INSERT
+ON Webinars
+AFTER UPDATE
 AS
 BEGIN
-   UPDATE WebinarsShoppingItem
-   SET hasTookPlace = 1
-   WHERE webinarID IN (SELECT webinarID FROM inserted);
+    IF UPDATE(isAvailable)
+    BEGIN
+        UPDATE WebinarsShoppingItem
+        SET hasTookPlace = 1
+        FROM WebinarsShoppingItem WSI
+        INNER JOIN inserted I ON WSI.webinarID = I.webinarID
+        WHERE I.isAvailable = 1;
+    END
 END;
-    go
+go
 
 
 CREATE TRIGGER UpdateAccessAfterLogin

@@ -50,68 +50,8 @@ BEGIN
 END;
 go
 
-CREATE PROCEDURE RemoveCourse(
- @courseID int
-)
-AS
-BEGIN
- -- Check if the course exists
- IF EXISTS (SELECT 1 FROM Courses WHERE courseID = @courseID)
- BEGIN
-     -- Get the course data
-     DECLARE @courseTeacherID int, @date datetime, @price money, @maxEnrolls int, @currEnrolls int, @description varchar(max);
-     SELECT @courseTeacherID = courseTeacherID, @date = date, @price = price, @maxEnrolls = maxEnrolls, @currEnrolls = currEnrolls, @description = description
-     FROM Courses
-     WHERE courseID = @courseID;
-
-     -- Insert into CoursesHistory using VALUES
-     INSERT INTO CoursesHistory (courseID, courseTeacherID, date, price, enrolls , description)
-     VALUES (@courseID, @courseTeacherID, @date, @price, @currEnrolls, @description);
-
-     -- Delete the course
-     DELETE FROM Courses
-     WHERE courseID = @courseID;
-
-     PRINT 'Course has been successfully removed.';
- END
- ELSE
- BEGIN
-     PRINT 'Course with the provided ID does not exist.';
- END
-END;
-    go
-
-CREATE PROCEDURE TransferWebinarToWebinarHistory(
- @webinarID int,
- @linkToRecord varchar(max)
-)
-AS
-BEGIN
- -- Check if the webinar exists
- IF EXISTS (SELECT 1 FROM Webinars WHERE webinarID = @webinarID)
- BEGIN
-
-     DECLARE @webinarTeacherID int , @translatorID int , @date datetime , @price money , @description varchar(max)
-    SELECT @webinarTeacherID = webinarTeacherID, @translatorID = translatorID, @date = date, @price = price, @description = description
-    FROM Webinars
-    WHERE webinarID = @webinarID;
-
-      INSERT INTO WebinarsHistory(webinarID, webinarTeacherID, translatorID, date, price, linkToRecord , description, isAvailible)
-         VALUES (@webinarID, @webinarTeacherID, @translatorID, @date, @price, @linkToRecord, @description, 1);
-
-     -- Delete from that table
-     DELETE FROM Webinars
-     WHERE webinarID = @webinarID;
 
 
-     PRINT 'Webinar has been successfully removed.';
- END
- ELSE
- BEGIN
-     PRINT 'Webinar with the provided ID does not exist.';
- END
-END;
-    go
 
 
 CREATE PROCEDURE ModifyCourse(
@@ -726,8 +666,15 @@ BEGIN
        studiesOutsiderID = NULL
    WHERE userID = @userID;
 
+-- Zapisz zmiany w historii
+   INSERT INTO UsersDataChangeHistory(userID, dateOfChange, new_firstname, new_lastname, new_title, new_email, new_phone, new_encodedPassword, new_address, new_postalcode
+   VALUES (
+       @userID, @dateOfChange,
+       @new_firstname, @new_lastname, @new_title, @new_email,@new_phone,@new_encodedPassword,@new_address,@new_postalcode
+   );
 
-   PRINT N'Nowy użytkownik został pomyślnie dodany.';
+
+PRINT N'Nowy użytkownik został pomyślnie dodany.';
 END;
 go
 
