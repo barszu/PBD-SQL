@@ -134,14 +134,14 @@ BEGIN
            @newStudiesTeacherID = studiesTeacherID, @newStudiesOutsiderID = studiesOutsiderID
     FROM inserted;
 
-    IF ((@oldTranslatorID IS NOT NULL AND @newTranslatorID IS NOT NULL) OR
-        (@oldWebinarUserID IS NOT NULL AND @newWebinarUserID IS NOT NULL) OR
-        (@oldWebinarTeacherID IS NOT NULL AND @newWebinarTeacherID IS NOT NULL) OR
-        (@oldCourseUserID IS NOT NULL AND @newCourseUserID IS NOT NULL) OR
-        (@oldCourseTeacherID IS NOT NULL AND @newCourseTeacherID IS NOT NULL) OR
-        (@oldStudiesUserID IS NOT NULL AND @newStudiesUserID IS NOT NULL) OR
-        (@oldStudiesTeacherID IS NOT NULL AND @newStudiesTeacherID IS NOT NULL) OR
-        (@oldStudiesOutsiderID IS NOT NULL AND @newStudiesOutsiderID IS NOT NULL))
+    IF ((@oldTranslatorID IS NOT NULL AND @newTranslatorID IS NOT NULL AND @oldTranslatorID != @newTranslatorID) OR
+    (@oldWebinarUserID IS NOT NULL AND @newWebinarUserID IS NOT NULL AND @oldWebinarUserID != @newWebinarUserID) OR
+    (@oldWebinarTeacherID IS NOT NULL AND @newWebinarTeacherID IS NOT NULL AND @oldWebinarTeacherID != @newWebinarTeacherID) OR
+    (@oldCourseUserID IS NOT NULL AND @newCourseUserID IS NOT NULL AND @oldCourseUserID != @newCourseUserID) OR
+    (@oldCourseTeacherID IS NOT NULL AND @newCourseTeacherID IS NOT NULL AND @oldCourseTeacherID != @newCourseTeacherID) OR
+    (@oldStudiesUserID IS NOT NULL AND @newStudiesUserID IS NOT NULL AND @oldStudiesUserID != @newStudiesUserID) OR
+    (@oldStudiesTeacherID IS NOT NULL AND @newStudiesTeacherID IS NOT NULL AND @oldStudiesTeacherID != @newStudiesTeacherID) OR
+    (@oldStudiesOutsiderID IS NOT NULL AND @newStudiesOutsiderID IS NOT NULL AND @oldStudiesOutsiderID != @newStudiesOutsiderID))
     BEGIN
         RAISERROR ('Nie można zmienić ID na inną wartość niż NULL.', 16, 1);
         ROLLBACK TRANSACTION;
