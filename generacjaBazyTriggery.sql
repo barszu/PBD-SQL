@@ -134,9 +134,14 @@ BEGIN
            @newStudiesTeacherID = studiesTeacherID, @newStudiesOutsiderID = studiesOutsiderID
     FROM inserted;
 
-    IF (@newTranslatorID IS NOT NULL OR @newWebinarUserID IS NOT NULL OR @newWebinarTeacherID IS NOT NULL OR
-        @newCourseUserID IS NOT NULL OR @newCourseTeacherID IS NOT NULL OR @newStudiesUserID IS NOT NULL OR
-        @newStudiesTeacherID IS NOT NULL OR @newStudiesOutsiderID IS NOT NULL)
+    IF ((@oldTranslatorID IS NOT NULL AND @newTranslatorID IS NOT NULL) OR
+        (@oldWebinarUserID IS NOT NULL AND @newWebinarUserID IS NOT NULL) OR
+        (@oldWebinarTeacherID IS NOT NULL AND @newWebinarTeacherID IS NOT NULL) OR
+        (@oldCourseUserID IS NOT NULL AND @newCourseUserID IS NOT NULL) OR
+        (@oldCourseTeacherID IS NOT NULL AND @newCourseTeacherID IS NOT NULL) OR
+        (@oldStudiesUserID IS NOT NULL AND @newStudiesUserID IS NOT NULL) OR
+        (@oldStudiesTeacherID IS NOT NULL AND @newStudiesTeacherID IS NOT NULL) OR
+        (@oldStudiesOutsiderID IS NOT NULL AND @newStudiesOutsiderID IS NOT NULL))
     BEGIN
         RAISERROR ('Nie można zmienić ID na inną wartość niż NULL.', 16, 1);
         ROLLBACK TRANSACTION;
