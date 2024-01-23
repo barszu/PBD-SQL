@@ -78,7 +78,7 @@ CREATE PROCEDURE GetSyllabus
     @fieldOfStudiesID int
 AS
 BEGIN
-    SELECT ss.studiesSubjectID, ss.fieldOfStudiesID, fos.name, fos.type, fos.description, fos.practises, fos.maxEnrolls, fos.currEnrolls, fos.startDate, fos.isAvailible
+    SELECT ss.studiesSubjectID, ss.fieldOfStudiesID, fos.name, fos.type, fos.description, fos.practises, fos.maxEnrolls, fos.currEnrolls, fos.startDate, fos.isAvailable
     FROM StudiesSubject ss
     INNER JOIN FieldOfStudies fos ON ss.fieldOfStudiesID = fos.fieldOfStudiesID
     WHERE fos.fieldOfStudiesID = @fieldOfStudiesID;
@@ -667,10 +667,10 @@ BEGIN
    WHERE userID = @userID;
 
 -- Zapisz zmiany w historii
-   INSERT INTO UsersDataChangeHistory(userID, dateOfChange, new_firstname, new_lastname, new_title, new_email, new_phone, new_encodedPassword, new_address, new_postalcode
+   INSERT INTO UsersDataChangeHistory(userID, dateOfChange, new_firstname, new_lastname, new_title, new_email, new_phone, new_encodedPassword, new_address, new_postalcode)
    VALUES (
-       @userID, @dateOfChange,
-       @new_firstname, @new_lastname, @new_title, @new_email,@new_phone,@new_encodedPassword,@new_address,@new_postalcode
+       @userID, GETDATE(),
+       @firstname, @lastname, @title, @email,@phone,@encodedPassword,@address,@postalcode
    );
 
 
