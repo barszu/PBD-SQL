@@ -107,3 +107,40 @@ BEGIN
    WHERE webinarUserID = @userID AND DATEDIFF(day, accessGainedDate, GETDATE()) > @recentAccessTimeLaw;
 END;
 go
+
+
+    
+CREATE TRIGGER trg_PreventIDChangeInsert
+ON Users
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    DECLARE @oldTranslatorID int, @newTranslatorID int,
+            @oldWebinarUserID int, @newWebinarUserID int,
+            @oldWebinarTeacherID int, @newWebinarTeacherID int,
+            @oldCourseUserID int, @newCourseUserID int,
+            @oldCourseTeacherID int, @newCourseTeacherID int,
+            @oldStudiesUserID int, @newStudiesUserID int,
+            @oldStudiesTeacherID int, @newStudiesTeacherID int,
+            @oldStudiesOutsiderID int, @newStudiesOutsiderID int;
+
+    SELECT @oldTranslatorID = translatorID, @oldWebinarUserID = webinarUserID, @oldWebinarTeacherID = webinarTeacherID,
+           @oldCourseUserID = courseUserID, @oldCourseTeacherID = courseTeacherID, @oldStudiesUserID = studiesUserID,
+           @oldStudiesTeacherID = studiesTeacherID, @oldStudiesOutsiderID = studiesOutsiderID
+    FROM deleted;
+
+    SELECT @newTranslatorID = translatorID, @newWebinarUserID = webinarUserID, @newWebinarTeacherID = webinarTeacherID,
+           @newCourseUserID = courseUserID, @newCourseTeacherID = courseTeacherID, @newStudiesUserID = studiesUserID,
+           @newStudiesTeacherID = studiesTeacherID, @newStudiesOutsiderID = studiesOutsiderID
+    FROM inserted;
+
+    IF (@newTranslatorID IS NOT NULL OR @newWebinarUserID IS NOT NULL OR @newWebinarTeacherID IS NOT NULL OR
+        @newCourseUserID IS NOT NULL OR @newCourseTeacherID IS NOT NULL OR @newStudiesUserID IS NOT NULL OR
+        @newStudiesTeacherID IS NOT NULL OR @newStudiesOutsiderID IS NOT NULL)
+    BEGIN
+        RAISERROR ('Nie można zmienić ID na inną wartość niż NULL.', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+END;
+go
